@@ -25,6 +25,7 @@ jobs:
       run: dotnet build --configuration Release
 
   create-release:
+    permissions: write-all
     needs: build
     runs-on: windows-latest
     steps:
