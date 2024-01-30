@@ -8,4 +8,8 @@
     <StartupObject>ThisCompanyIsGettingLethal.Program</StartupObject>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Include=".github\workflows\dotnet-desktop.yml" />
+  </ItemGroup>
+
 </Project>
