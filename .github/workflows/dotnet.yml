@@ -28,10 +28,12 @@ jobs:
     needs: build
     runs-on: windows-latest
     steps:
-    - name: Get tag name from ref
-      shell: bash
-      run: echo "::set-output name=tag::${GITHUB_REF#refs/tags/}"
-      id: get_tag
+    - name: Generate release tag
+    id: generate_release_tag
+    uses: alexvingg/next-release-tag@v1.0.3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        tag_prefix: ''
     - name: Create Release
       uses: actions/create-release@v1
       with:
