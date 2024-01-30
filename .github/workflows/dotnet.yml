@@ -23,19 +23,22 @@ jobs:
     - name: Build
       run: dotnet build --configuration Release
 
-#    - name: Test
-#      run: dotnet test
-
   create-release:
     permissions: write-all
     needs: build
     runs-on: windows-latest
     steps:
+    - name: Get tag name from ref
+      shell: bash
+      run: echo "::set-output name=tag::${GITHUB_REF#refs/tags/}"
+      id: get_tag
     - name: Create Release
       uses: actions/create-release@v1
       with:
-        tag_name: ${{ github.sha }}
+        tag_name: ${{ steps.get_tag.outputs.tag }}
         release_name: Release ${{ github.sha }}
         body: Automated release created by GitHub Actions
+        draft: false
+        prerelease: false
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
