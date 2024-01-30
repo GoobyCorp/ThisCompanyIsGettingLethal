@@ -3,7 +3,7 @@ name: .NET 8.0 Console Build and Release
 on:
   push:
     branches:
-      - main
+      - master
 
 jobs:
   build:
