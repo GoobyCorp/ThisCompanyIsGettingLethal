@@ -9,7 +9,7 @@ jobs:
   build:
     permissions:
       contents: write
-    needs: build
+    # needs: build
     runs-on: windows-latest
     steps:
     - name: Checkout repository
