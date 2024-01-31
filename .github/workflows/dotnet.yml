@@ -24,7 +24,7 @@ jobs:
       run: dotnet build --configuration Release
 
     - name: Zip Build Artifacts
-      run: Compress-Archive -Path ./bin/Release -DestinationPath ./bin/Release.zip
+      run: Compress-Archive -Path ./bin/Release/net8.0 -DestinationPath ./bin/net8.0/Release.zip
 
   create-release:
     permissions:
@@ -51,6 +51,6 @@ jobs:
         body: Automated release created by GitHub Actions
         draft: false
         prerelease: false
-        files: ./bin/Release.zip
+        files: ./bin/net8.0/Release.zip
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
