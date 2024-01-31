@@ -24,7 +24,7 @@ jobs:
       run: dotnet build --configuration Release
 
     - name: Zip Build Artifacts
-      run: Compress-Archive -Path ./bin/Release/net8.0 -DestinationPath ./bin/net8.0/Release.zip
+      run: Compress-Archive -Path ./bin/Release/net8.0 -DestinationPath ./bin/Release/net8.0/Release.zip
 
   create-release:
     permissions:
