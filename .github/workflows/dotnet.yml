@@ -8,7 +8,6 @@ on:
 jobs:
   build:
     runs-on: windows-latest
-
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
@@ -24,12 +23,16 @@ jobs:
     - name: Build
       run: dotnet build --configuration Release
 
+    - name: Zip Build Artifacts
+      run: Compress-Archive -Path ./bin/Release -DestinationPath ./bin/Release.zip
+
   create-release:
     permissions: write-all
     needs: build
     runs-on: windows-latest
     steps:
     - name: Create Release
+      id: create_release
       uses: actions/create-release@v1
       with:
         tag_name: v${{ github.run_number }}
@@ -37,5 +40,14 @@ jobs:
         body: Automated release created by GitHub Actions
         draft: false
         prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v2
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./bin/Release.zip
+        asset_name: Release.zip
+        asset_content_type: application/zip
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
