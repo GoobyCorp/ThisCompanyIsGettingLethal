@@ -9,7 +9,7 @@ namespace ThisCompanyIsGettingLethal
                 var pe = await hc.GetFromJsonAsync<PackageExperimental>($"https://thunderstore.io/api/experimental/package/{creator}/{mod}/");
                 if (pe == null)
                     return null;
-                if (String.IsNullOrEmpty(pe.latest.download_url) || String.IsNullOrEmpty(pe.latest.full_name))
+                if (String.IsNullOrEmpty(pe.Latest.DownloadUrl) || String.IsNullOrEmpty(pe.Latest.FullName))
                     return null;
                 return pe;
             }

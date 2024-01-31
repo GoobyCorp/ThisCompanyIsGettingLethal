@@ -4,102 +4,97 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ThisCompanyIsGettingLethal
 {
-    //internal class JsonMessages
-    //{
-
-    //}
-
     internal class PackageExperimental {
         [JsonPropertyName("namespace"), ReadOnly(true)]
-        public string _namespace { get; set; }
+        public string Namespace { get; set; }
 
         [JsonPropertyName("name"), MinLength(1), MaxLength(128), Required]
-        public string name { get; set; }
+        public string Name { get; set; }
 
         [JsonPropertyName("full_name"), ReadOnly(true)]
-        public string full_name { get; set; }
+        public string FullName { get; set; }
 
         [JsonPropertyName("owner"), ReadOnly(true)]
-        public string owner { get; set; }
+        public string Owner { get; set; }
 
         [JsonPropertyName("package_url"), ReadOnly(true)]
-        public string package_url { get; set; }
+        public string PackageUrl { get; set; }
 
         [JsonPropertyName("date_created"), ReadOnly(true)]
-        public string date_created { get; set; }
+        public string DateCreated { get; set; }
 
         [JsonPropertyName("date_updated"), ReadOnly(true)]
-        public string date_updated { get; set; }
+        public string DateUpdated { get; set; }
 
         [JsonPropertyName("rating_score"), Range(0, int.MaxValue)]
-        public int rating_score { get; set; }
+        public int RatingScore { get; set; }
 
         [JsonPropertyName("is_pinned")]
-        public bool is_pinned { get; set; }
+        public bool IsPinned { get; set; }
 
         [JsonPropertyName("is_deprecated")]
-        public bool is_deprecated { get; set; }
+        public bool IsDeprecated { get; set; }
 
         [JsonPropertyName("total_downloads"), Range(0, int.MaxValue)]
-        public int total_downloads { get; set; }
+        public int TotalDownloads { get; set; }
 
         [JsonPropertyName("latest"), Required]
-        public PackageVersionExperimental latest { get; set; }
+        public PackageVersionExperimental Latest { get; set; }
 
         [JsonPropertyName("community_listings"), Required]
-        public PackageListingExperimental[] community_listings { get; set; }
+        public PackageListingExperimental[] CommunityListings { get; set; }
     }
 
     internal class PackageVersionExperimental {
         // string namespace;
         [JsonPropertyName("namespace"), ReadOnly(true)]
-        public string _namespace { get; set; }
+        public string Namespace { get; set; }
 
         [JsonPropertyName("name"), MinLength(1), MaxLength(128), Required]
-        public string name { get; set; }
+        public string Name { get; set; }
 
         [JsonPropertyName("version_number"), MinLength(1), MaxLength(16), Required]
-        public string version_number { get; set; }
+        public string VersionNumber { get; set; }
 
         [JsonPropertyName("full_name"), ReadOnly(true)]
-        public string full_name { get; set; }
+        public string FullName { get; set; }
 
         [JsonPropertyName("description"), MinLength(1), MaxLength(128), Required]
-        public string description { get; set; }
+        public string Description { get; set; }
 
         [JsonPropertyName("icon"), ReadOnly(true)]
-        public string icon { get; set; }
+        public string Icon { get; set; }
 
         [JsonPropertyName("dependencies"), ReadOnly(true)]
-        public string[] dependencies { get; set; }
+        public string[] Dependencies { get; set; }
 
         [JsonPropertyName("download_url"), ReadOnly(true)]
-        public string download_url { get; set; }
+        public string DownloadUrl { get; set; }
 
         [JsonPropertyName("downloads"), Range(0, int.MaxValue)]
-        public int downloads { get; set; }
+        public int Downloads { get; set; }
 
         [JsonPropertyName("date_created"), ReadOnly(true)]
-        public string date_created { get; set; }
+        public string DateCreated { get; set; }
 
         [JsonPropertyName("website_url"), ReadOnly(true), MinLength(1), MaxLength(1024), Required]
-        public string website_url { get; set; }
+        public string WebsiteUrl { get; set; }
 
         [JsonPropertyName("is_active")]
-        public bool is_active { get; set; }
+        public bool IsActive { get; set; }
     }
 
     internal class PackageListingExperimental {
         [JsonPropertyName("has_nsfw_content")]
-        public bool has_nsfw_content { get; set; }
+        public bool HasNsfwContent { get; set; }
 
         [JsonPropertyName("categories"), ReadOnly(true)]
-        public string[] categories { get; set; }
+        public string[] Categories { get; set; }
 
         [JsonPropertyName("community"), ReadOnly(true)]
-        public string community { get; set; }
+        public string Community { get; set; }
 
         [JsonPropertyName("review_status"), AllowedValues("unreviewed", "approved", "rejected")]
-        public string review_status { get; set; }
+        public string ReviewStatus { get; set; }
     }
 }
