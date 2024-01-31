@@ -39,6 +39,6 @@ jobs:
         body: Automated release created by GitHub Actions
         draft: false
         prerelease: false
-        files: *.zip
+        files: ./Release.zip
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
