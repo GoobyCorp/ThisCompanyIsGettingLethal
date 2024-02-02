@@ -46,14 +46,14 @@ namespace ThisCompanyIsGettingLethal
         }
 
         internal static void FindDownloadExtractPackage(string creator, string mod) {
-            Task<PackageExperimental> t0 = ThunderstoreAPI.Package(creator, mod);
+            Task<PackageExperimental> t0 = ThunderstoreAPI.PackageExperimental(creator, mod);
             t0.Wait();
             var pe = t0.Result;
             string path = Path.Combine(DOWNLOAD_DIR, pe.Latest.FullName + ".zip");
 
             Console.WriteLine($"Downloading \"{pe.Namespace}/{pe.Name}\" version \"{pe.Latest.VersionNumber}\" to \"{path}\"...");
 
-            Task t1 = ThunderstoreAPI.Download(pe.Latest.DownloadUrl, path);
+            Task t1 = Utilities.DownloadFile(pe.Latest.DownloadUrl, path);
             t1.Wait();
             Task t2 = Task.Run(() => {
                 Utilities.ExtractZipEntriesWithPrefix(path, "BepInEx/plugins/", MODS_DIR);

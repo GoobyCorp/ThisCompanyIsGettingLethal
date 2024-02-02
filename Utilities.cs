@@ -25,5 +25,13 @@ namespace ThisCompanyIsGettingLethal
                 }
             }
         }
+
+        internal static async Task DownloadFile(string url, string path) {
+            using (var hc = new HttpClient()) {
+                Stream httpStream = await hc.GetStreamAsync(url);
+                using (var fs = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None))
+                    httpStream.CopyTo(fs, 8192);
+            }
+        }
     }
 }

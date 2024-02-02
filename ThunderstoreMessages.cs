@@ -4,6 +4,40 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ThisCompanyIsGettingLethal
 {
+    #region V1
+    internal class PackageListing {
+        [JsonPropertyName("name"), ReadOnly(true)]
+        public string Name { get; set; }
+        [JsonPropertyName("full_name"), ReadOnly(true)]
+        public string FullName { get; set; }
+        [JsonPropertyName("owner"), ReadOnly(true)]
+        public string Owner { get; set; }
+        [JsonPropertyName("package_url"), ReadOnly(true)]
+        public string PackageUrl { get; set; }
+        [JsonPropertyName("donation_link"), ReadOnly(true)]
+        public string DonationLink { get; set; }
+        [JsonPropertyName("date_created"), ReadOnly(true)]
+        public string DateCreated { get; set; }
+        [JsonPropertyName("date_updated"), ReadOnly(true)]
+        public string DateUpdated { get; set; }
+        [JsonPropertyName("uuid4"), ReadOnly(true)]
+        public string UUID4 { get; set; }
+        [JsonPropertyName("rating_score"), ReadOnly(true)]
+        public string RatingScore { get; set; }
+        [JsonPropertyName("is_pinned"), ReadOnly(true)]
+        public string IsPinned { get; set; }
+        [JsonPropertyName("is_deprecated"), ReadOnly(true)]
+        public string IsDeprecated { get; set; }
+        [JsonPropertyName("has_nsfw_content")]
+        public bool HasNsfwContent { get; set; }
+        [JsonPropertyName("categories"), ReadOnly(true)]
+        public string Categories { get; set; }
+        [JsonPropertyName("versions"), ReadOnly(true)]
+        public string Versions { get; set; }
+    }
+    #endregion
+
+    #region Experimental
     internal class PackageExperimental {
         [JsonPropertyName("namespace"), ReadOnly(true)]
         public string Namespace { get; set; }
@@ -97,4 +131,5 @@ namespace ThisCompanyIsGettingLethal
         [JsonPropertyName("review_status"), AllowedValues("unreviewed", "approved", "rejected")]
         public string ReviewStatus { get; set; }
     }
+    #endregion
 }
