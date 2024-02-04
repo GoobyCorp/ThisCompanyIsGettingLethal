@@ -9,7 +9,7 @@ namespace ThisCompanyIsGettingLethal
         internal const string MODS_DIR = "Mods";
         internal const string MODPACK_FILE = "modpack.zip";
 
-        static async Task Main(string[] args) {
+        static async Task<int> Main(string[] args) {
             if(!File.Exists(CONFIG_FILE))
                 File.WriteAllText(CONFIG_FILE, "[]");
 
@@ -23,9 +23,8 @@ namespace ThisCompanyIsGettingLethal
             ConfigEntry[] entries = JsonSerializer.Deserialize<ConfigEntry[]>(File.ReadAllText(CONFIG_FILE));
             if (entries == null || entries.Length == 0) {
                 Console.WriteLine("No config entries found, aborting...");
-                Console.WriteLine("Press ENTER to exit...");
-                Console.ReadKey();
-                return;
+                Finished();
+                return 0;
             }
 
             Console.WriteLine("Fetching download links and files...");
@@ -37,7 +36,11 @@ namespace ThisCompanyIsGettingLethal
                 ZipFile.CreateFromDirectory(MODS_DIR, fs, CompressionLevel.Optimal, false);
             Console.WriteLine("Done!");
 
-        // Finished:
+            Finished();
+            return 0;
+        }
+
+        internal static void Finished() {
 #if DEBUG
             Console.WriteLine("Press ENTER to exit...");
             Console.ReadKey();
