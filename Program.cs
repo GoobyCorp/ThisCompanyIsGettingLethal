@@ -9,7 +9,7 @@ namespace ThisCompanyIsGettingLethal
         internal const string MODS_DIR = "Mods";
         internal const string MODPACK_FILE = "modpack.zip";
 
-        static int Main(string[] args) {
+        static async Task Main(string[] args) {
             if(!File.Exists(CONFIG_FILE))
                 File.WriteAllText(CONFIG_FILE, "[]");
 
@@ -27,9 +27,8 @@ namespace ThisCompanyIsGettingLethal
             }
 
             Console.WriteLine("Fetching download links and files...");
-            List<Task> allTasks = new List<Task>();
-            entries.ToList().ForEach(e => allTasks.Add(Task.Run(() => { FindDownloadExtractPackage(e.Creator, e.Mod); })));
-            Task.WaitAll(allTasks.ToArray());
+            Task[] t = entries.ToList().Select((e) => FindDownloadExtractPackage(e.Creator, e.Mod)).ToArray();
+            await Task.WhenAll(t);
 
             Console.WriteLine("Creating modpack...");
             using (var fs = File.Open(MODPACK_FILE, FileMode.Create, FileAccess.Write, FileShare.None))
@@ -41,24 +40,25 @@ namespace ThisCompanyIsGettingLethal
             Console.WriteLine("Press ENTER to exit...");
             Console.ReadKey();
 #endif
-
-            return 0;
         }
 
-        internal static void FindDownloadExtractPackage(string creator, string mod) {
-            Task<PackageExperimental> t0 = ThunderstoreAPI.PackageExperimental(creator, mod);
-            t0.Wait();
-            var pe = t0.Result;
-            string path = Path.Combine(DOWNLOAD_DIR, pe.Latest.FullName + ".zip");
+        internal static async Task FindDownloadExtractPackage(string creator, string mod) {
+            await ThunderstoreAPI.PackageExperimental(creator, mod).ContinueWith(async (e0) => {
+                var pe = e0.Result;
+                string path = Path.Combine(DOWNLOAD_DIR, pe.Latest.FullName + ".zip");
+                Console.WriteLine($"Downloading \"{pe.Namespace}/{pe.Name}\" version \"{pe.Latest.VersionNumber}\" to \"{path}\"...");
+                await Utilities.DownloadFileAsync(pe.Latest.DownloadUrl, path).ContinueWith(async (e1) => {
+                    await ExtractPackageAsync(path).ContinueWith(async (e2) => {
+                        return e2;
+                    });
+                });
+            });
+        }
 
-            Console.WriteLine($"Downloading \"{pe.Namespace}/{pe.Name}\" version \"{pe.Latest.VersionNumber}\" to \"{path}\"...");
-
-            Task t1 = Utilities.DownloadFile(pe.Latest.DownloadUrl, path);
-            t1.Wait();
-            Task t2 = Task.Run(() => {
+        internal static async Task ExtractPackageAsync(string path) {
+            await Task.Run(() => {
                 Utilities.ExtractZipEntriesWithPrefix(path, "BepInEx/plugins/", MODS_DIR);
             });
-            t2.Wait();
         }
     }
 }
