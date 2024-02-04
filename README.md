@@ -9,7 +9,7 @@ A `config.json` file is required for this to work:
             "creator": "(creator here)",
             "mod": "(mod here)"
         },
-        ... (more entries here) ...
+        ... more entries here ...
     }
 
 ### References:
