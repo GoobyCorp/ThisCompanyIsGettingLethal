@@ -23,7 +23,9 @@ namespace ThisCompanyIsGettingLethal
             ConfigEntry[] entries = JsonSerializer.Deserialize<ConfigEntry[]>(File.ReadAllText(CONFIG_FILE));
             if (entries == null || entries.Length == 0) {
                 Console.WriteLine("No config entries found, aborting...");
-                goto Finished;
+                Console.WriteLine("Press ENTER to exit...");
+                Console.ReadKey();
+                return;
             }
 
             Console.WriteLine("Fetching download links and files...");
@@ -35,7 +37,7 @@ namespace ThisCompanyIsGettingLethal
                 ZipFile.CreateFromDirectory(MODS_DIR, fs, CompressionLevel.Optimal, false);
             Console.WriteLine("Done!");
 
-        Finished:
+        // Finished:
 #if DEBUG
             Console.WriteLine("Press ENTER to exit...");
             Console.ReadKey();
