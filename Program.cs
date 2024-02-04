@@ -23,8 +23,7 @@ namespace ThisCompanyIsGettingLethal
             ConfigEntry[] entries = JsonSerializer.Deserialize<ConfigEntry[]>(File.ReadAllText(CONFIG_FILE));
             if (entries == null || entries.Length == 0) {
                 Console.WriteLine("No config entries found, aborting...");
-                Finished();
-                return 0;
+                goto Finished;
             }
 
             Console.WriteLine("Fetching download links and files...");
@@ -35,16 +34,12 @@ namespace ThisCompanyIsGettingLethal
             using (var fs = File.Open(MODPACK_FILE, FileMode.Create, FileAccess.Write, FileShare.None))
                 ZipFile.CreateFromDirectory(MODS_DIR, fs, CompressionLevel.Optimal, false);
             Console.WriteLine("Done!");
-
-            Finished();
-            return 0;
-        }
-
-        internal static void Finished() {
+        Finished:
 #if DEBUG
             Console.WriteLine("Press ENTER to exit...");
             Console.ReadKey();
 #endif
+            return 0;
         }
 
         internal static async Task FindDownloadExtractPackage(string creator, string mod) {
