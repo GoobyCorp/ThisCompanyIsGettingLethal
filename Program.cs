@@ -41,7 +41,7 @@ namespace ThisCompanyIsGettingLethal
             }
 
             Console.WriteLine("Fetching download links and files...");
-            List<Task> tl = entries.ToList().Select((e) => FindDownloadExtractPackage(e.Creator, e.Mod)).ToList();
+            List<Task> tl = entries.ToList().Select((e) => FindDownloadExtractPackageAsync(e.Creator, e.Mod)).ToList();
             await Task.WhenAll(tl);
 
             Console.WriteLine("Creating modpack...");
@@ -57,7 +57,7 @@ namespace ThisCompanyIsGettingLethal
             return 0;
         }
 
-        internal static async Task FindDownloadExtractPackage(string creator, string mod) {
+        internal static async Task FindDownloadExtractPackageAsync(string creator, string mod) {
             var pe = await ThunderstoreAPI.PackageExperimental(creator, mod);
             string path = Path.Combine(DOWNLOAD_DIR, pe.Latest.FullName + ".zip");
             Console.WriteLine($"Downloading \"{pe.Namespace}/{pe.Name}\" version \"{pe.Latest.VersionNumber}\" to \"{path}\"...");
@@ -66,7 +66,7 @@ namespace ThisCompanyIsGettingLethal
         }
 
         internal static async Task ExtractModPackageAsync(string path) {
-            await Utilities.ExtractZipEntriesWithPrefix(path, PLUGIN_PREFIX, MODS_DIR);
+            await Utilities.ExtractZipEntriesWithPrefixAsync(path, PLUGIN_PREFIX, MODS_DIR);
         }
 
         internal static async Task CreateModPackageAsync(string path) {
