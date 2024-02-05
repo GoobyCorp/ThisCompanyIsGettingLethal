@@ -8,10 +8,24 @@ namespace ThisCompanyIsGettingLethal
         internal const string DOWNLOAD_DIR = "Downloads";
         internal const string MODS_DIR = "Mods";
         internal const string MODPACK_FILE = "modpack.zip";
+        internal const string PLUGIN_PREFIX = "BepInEx/plugins/";
 
         static async Task<int> Main(string[] args) {
             if(!File.Exists(CONFIG_FILE))
                 File.WriteAllText(CONFIG_FILE, "[]");
+
+#if DEBUG
+            Console.WriteLine("DEBUG - Removing old directories...");
+
+            if (Directory.Exists(DOWNLOAD_DIR))
+                Directory.Delete(DOWNLOAD_DIR, true);
+
+            if (Directory.Exists(MODS_DIR))
+                Directory.Delete(MODS_DIR, true);
+
+            if (File.Exists(MODPACK_FILE))
+                File.Delete(MODPACK_FILE);
+#endif
 
             if (!Directory.Exists(DOWNLOAD_DIR))
                 Directory.CreateDirectory(DOWNLOAD_DIR);
@@ -27,13 +41,14 @@ namespace ThisCompanyIsGettingLethal
             }
 
             Console.WriteLine("Fetching download links and files...");
-            Task[] t = entries.ToList().Select((e) => FindDownloadExtractPackage(e.Creator, e.Mod)).ToArray();
-            await Task.WhenAll(t);
+            List<Task> tl = entries.ToList().Select((e) => FindDownloadExtractPackage(e.Creator, e.Mod)).ToList();
+            await Task.WhenAll(tl);
 
             Console.WriteLine("Creating modpack...");
-            using (var fs = File.Open(MODPACK_FILE, FileMode.Create, FileAccess.Write, FileShare.None))
-                ZipFile.CreateFromDirectory(MODS_DIR, fs, CompressionLevel.Optimal, false);
+            await CreateModPackageAsync(MODPACK_FILE);
+
             Console.WriteLine("Done!");
+
         Finished:
 #if DEBUG
             Console.WriteLine("Press ENTER to exit...");
@@ -43,21 +58,21 @@ namespace ThisCompanyIsGettingLethal
         }
 
         internal static async Task FindDownloadExtractPackage(string creator, string mod) {
-            await ThunderstoreAPI.PackageExperimental(creator, mod).ContinueWith(async (e0) => {
-                var pe = e0.Result;
-                string path = Path.Combine(DOWNLOAD_DIR, pe.Latest.FullName + ".zip");
-                Console.WriteLine($"Downloading \"{pe.Namespace}/{pe.Name}\" version \"{pe.Latest.VersionNumber}\" to \"{path}\"...");
-                await Utilities.DownloadFileAsync(pe.Latest.DownloadUrl, path).ContinueWith(async (e1) => {
-                    await ExtractPackageAsync(path).ContinueWith(async (e2) => {
-                        return e2;
-                    });
-                });
-            });
+            var pe = await ThunderstoreAPI.PackageExperimental(creator, mod);
+            string path = Path.Combine(DOWNLOAD_DIR, pe.Latest.FullName + ".zip");
+            Console.WriteLine($"Downloading \"{pe.Namespace}/{pe.Name}\" version \"{pe.Latest.VersionNumber}\" to \"{path}\"...");
+            await Utilities.DownloadFileAsync(pe.Latest.DownloadUrl, path);
+            await ExtractModPackageAsync(path);
         }
 
-        internal static async Task ExtractPackageAsync(string path) {
+        internal static async Task ExtractModPackageAsync(string path) {
+            await Utilities.ExtractZipEntriesWithPrefix(path, PLUGIN_PREFIX, MODS_DIR);
+        }
+
+        internal static async Task CreateModPackageAsync(string path) {
             await Task.Run(() => {
-                Utilities.ExtractZipEntriesWithPrefix(path, "BepInEx/plugins/", MODS_DIR);
+                using (var fs = File.Open(path, FileMode.Create, FileAccess.Write, FileShare.None))
+                    ZipFile.CreateFromDirectory(MODS_DIR, fs, CompressionLevel.Optimal, false);
             });
         }
     }

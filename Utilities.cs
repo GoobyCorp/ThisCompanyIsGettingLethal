@@ -4,7 +4,7 @@ namespace ThisCompanyIsGettingLethal
 {
     internal class Utilities
     {
-        internal static void ExtractZipEntriesWithPrefix(string zipPath, string prefix, string outPath) {
+        internal static async Task ExtractZipEntriesWithPrefix(string zipPath, string prefix, string outPath) {
             using (ZipArchive archive = ZipFile.OpenRead(zipPath)) {
                 foreach (var entry in archive.Entries) {
                     if (String.IsNullOrEmpty(entry.Name))
@@ -21,17 +21,18 @@ namespace ThisCompanyIsGettingLethal
                     if (!Directory.Exists(finalDir))
                         Directory.CreateDirectory(finalDir);
 
-                    entry.ExtractToFile(finalPath, true);
+                    using (var fs = new FileStream(finalPath, FileMode.Create, FileAccess.Write, FileShare.None))
+                    using (Stream zs = entry.Open())
+                        await zs.CopyToAsync(fs);
                 }
             }
         }
 
         internal static async Task DownloadFileAsync(string url, string path) {
-            using (var hc = new HttpClient()) {
-                var httpStream = await hc.GetStreamAsync(url);
-                using (var fs = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None))
-                    await httpStream.CopyToAsync(fs, 8192);
-            }
+            using (var hc = new HttpClient())
+            using (var hs = await hc.GetStreamAsync(url))
+            using (var fs = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None))
+                await hs.CopyToAsync(fs, 8192);
         }
     }
 }
